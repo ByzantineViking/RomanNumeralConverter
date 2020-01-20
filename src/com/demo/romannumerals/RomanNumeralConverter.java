@@ -117,8 +117,11 @@ public class RomanNumeralConverter {
             } else {
                 // Last symbol can only be additive
                 if(str.length() > 1) {
-                    if(lastOfNumber && processRoman(str.charAt(index - 1)) == currentSymbol) {
+                    int secondToLast = processRoman(str.charAt(index - 1));
+                    if(lastOfNumber && secondToLast == currentSymbol) {
                         return -5;
+                    } else if ( secondToLast < currentSymbol ) {
+                        return -2;
                     }
                 }
                 res = res + currentSymbol;
