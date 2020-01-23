@@ -1,9 +1,13 @@
-package com.demo.romannumerals;
+package main.com.romannumerals.demo;
 
 import java.util.Scanner;
 import java.util.regex.*;
 
+/** See http://mathworld.wolfram.com/RomanNumerals.html */
 public class RomanNumeralConverter {
+
+    // Match the pattern against Regex of possible Roman numerals. Implementation difference: 4 M:s are not allowed.
+    private Pattern RomanPattern = Pattern.compile("^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$");
 
     private int processRoman(char r) {
         if (r == 'I')
@@ -26,9 +30,14 @@ public class RomanNumeralConverter {
     /**
      * @param  str  Roman numeral
      * @return      Converted integer
+     * @throws      IllegalArgumentException  if entered Roman numeral is not valid.
      * @see         <a href="https://www.geeksforgeeks.org/converting-roman-numerals-decimal-lying-1-3999/">https://www.geeksforgeeks.org/converting-roman-numerals-decimal-lying-1-3999/</a>
      */
-    private int convert( String str) {
+    public int convert( String str) {
+        Matcher matcher = RomanPattern.matcher(str);
+        boolean matches = matcher.matches();
+        if(!matches)
+            throw new IllegalArgumentException("Not a valid Roman numeral");
         int res = 0;
         for (int i=0; i<str.length(); i++) {
             int currentValue = processRoman(str.charAt(i));
@@ -52,27 +61,17 @@ public class RomanNumeralConverter {
     }
 
     /**
-     * @throws  IllegalArgumentException
-     * @see     <a href="https://stackoverflow.com/questions/267399/how-do-you-match-only-valid-roman-numerals-with-a-regular-expression">https://stackoverflow.com/questions/267399/how-do-you-match-only-valid-roman-numerals-with-a-regular-expression</a>
+     * @see  <a href="https://stackoverflow.com/questions/267399/how-do-you-match-only-valid-roman-numerals-with-a-regular-expression">https://stackoverflow.com/questions/267399/how-do-you-match-only-valid-roman-numerals-with-a-regular-expression</a>
      */
     public static void main(String[] args) throws IllegalArgumentException {
         RomanNumeralConverter object = new RomanNumeralConverter();
         Scanner scanner = new Scanner(System.in);
-
-
-        // Match the pattern against Regex of possible Roman numerals. Implementation difference: 4 M:s are not allowed.
-        Pattern RomanPattern = Pattern.compile("^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$");
-
         while(true) {
             System.out.println("Available characters: MDCLXVI");
             System.out.println("Enter a Roman Numeral: ");
             String response = scanner.next();
-            Matcher matcher = RomanPattern.matcher(response);
-            boolean matches = matcher.matches();
-            if(!matches)
-                throw new IllegalArgumentException("Not a valid Roman numeral");
-            else
-                System.out.println(object.convert(response));
+            System.out.println(object.convert(response));
+
             // Ask the user if he wants to enter a new Roman numeral.
             boolean responseReceived = false;
             while(!responseReceived) {
